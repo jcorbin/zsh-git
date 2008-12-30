@@ -1,0 +1,86 @@
+##
+## Load with `autoload -U zgitinit; zgitinit'
+##
+
+typeset -gA zgit_info
+zgit_info=()
+
+zgit_chpwd_hook() {
+	zgit_info_update
+}
+
+zgit_preexec_hook() {
+	if [[ $2 == git\ * ]] || [[ $2 == *\ git\ * ]]; then
+		zgit_precmd_do_update=1
+	fi
+}
+
+zgit_precmd_hook() {
+	if [ $zgit_precmd_do_update ]; then
+		unset zgit_precmd_do_update
+		zgit_info_update
+	fi
+}
+
+zgit_info_update() {
+	zgit_info=()
+
+	local gitdir=$(git rev-parse --git-dir 2>/dev/null)
+	if [ $? -ne 0 ] || [ -z "$gitdir" ]; then
+		return
+	fi
+
+	zgit_info[dir]=$gitdir
+}
+
+zgit_isgit() {
+	if [ -z "$zgit_info[dir]" ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+zgit_head() {
+	zgit_isgit || return 1
+
+	if [ -z "$zgit_info[head]" ]; then
+		local commit=$(git rev-parse HEAD 2>/dev/null)
+		if [ $? -ne 0 ]; then
+			return 1
+		fi
+		local name=''
+		name=$(git name-rev --refs='refs/heads/*' --no-undefined --name-only $commit 2>/dev/null)
+		if [ $? -ne 0 ]; then
+			name=$(git name-rev --no-undefined --name-only --always $commit 2>/dev/null)
+			if [ $? -ne 0 ]; then
+				return 1
+			fi
+		fi
+		zgit_info[head]=$name
+	fi
+
+	echo $zgit_info[head]
+	return 0
+}
+
+zgit_isclean() {
+	local -a gtst
+	gtst=(${(f)"$(git status 2>/dev/null)"})
+	if [[ $gtst[2] == 'nothing to commit'* ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+zgitinit() {
+	chpwd_functions+='zgit_chpwd_hook'
+	preexec_functions+='zgit_preexec_hook'
+	precmd_functions+='zgit_precmd_hook'
+}
+
+zgitinit
+zgit_info_update
+
+# vim:set ft=zsh:
