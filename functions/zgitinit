@@ -50,11 +50,16 @@ zgit_head() {
 			return 1
 		fi
 		local name=''
-		name=$(git name-rev --refs='refs/heads/*' --no-undefined --name-only $commit 2>/dev/null)
-		if [ $? -ne 0 ]; then
-			name=$(git name-rev --no-undefined --name-only --always $commit 2>/dev/null)
+		gtst=(${(f)"$(git status 2>/dev/null)"})
+		if [[ $gtst[1] == '# On branch'* ]]; then
+			name=${${gtst[1]}#\# On branch }
+		else
+			name=$(git name-rev --refs='refs/heads/*' --no-undefined --name-only $commit 2>/dev/null)
 			if [ $? -ne 0 ]; then
-				return 1
+				name=$(git name-rev --no-undefined --name-only --always $commit 2>/dev/null)
+				if [ $? -ne 0 ]; then
+					return 1
+				fi
 			fi
 		fi
 		zgit_info[head]=$name
