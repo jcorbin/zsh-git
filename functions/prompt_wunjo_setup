@@ -1,5 +1,8 @@
 # wunjo prompt theme
 
+autoload -U zgitinit
+zgitinit
+
 prompt_wunjo_help () {
   cat <<'EOF'
 
@@ -89,6 +92,8 @@ prompt_wunjo_setup () {
 	pc[hist]='green'
 	pc[path]='cyan'
 	pc[rc]='red'
+	pc[scm_branch]='Blue'
+	pc[scm_status]='Cyan'
 	pc[#]='Yellow'
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
@@ -112,10 +117,12 @@ prompt_wunjo_setup () {
 	fi
 	PROMPT+="$pc[path]%(2~.%~.%/)$reset_color"
 	PROMPT+="%(?.. $pc[rc]exited %1v$reset_color)"
+	PROMPT+="\$(prompt_wunjo_scm_status \"$pc[punc]\" \"$pc[scm_status]\" \"$reset_color\")"
 	PROMPT+="
 "
 	PROMPT+="$pc[hist]%h$pc[punc]:$reset_color "
 	PROMPT+="$pc[path]%1~$reset_color"
+	PROMPT+="\$(prompt_wunjo_scm_branch \"$pc[punc]\" \"$pc[scm_branch]\" \"$reset_color\")"
 	PROMPT+=" $pc[#]%#$reset_color "
 
 	RPROMPT=
@@ -136,6 +143,22 @@ prompt_wunjo_precmd() {
 	else
 		psvar[1]="$ex"
 	fi
+}
+
+prompt_wunjo_scm_status() {
+	zgit_isgit || return
+	local punc=$1 st=$2 reset=$3
+
+	if ! zgit_isclean; then
+		echo " $punc(${st}dirty$punc)$reset"
+	fi
+}
+
+prompt_wunjo_scm_branch() {
+	zgit_isgit || return
+	local punc=$1 br=$2 reset=$3
+
+	echo "$punc($br$(zgit_head)$punc)$reset"
 }
 
 prompt_wunjo_setup "$@"
