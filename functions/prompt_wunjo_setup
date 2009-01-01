@@ -1,0 +1,128 @@
+# wunjo prompt theme
+
+prompt_wunjo_help () {
+  cat <<'EOF'
+
+  prompt wunjo
+
+EOF
+}
+
+
+typeset -A colorcode
+colorcode[black]=0
+colorcode[red]=1
+colorcode[green]=2
+colorcode[yellow]=3
+colorcode[blue]=4
+colorcode[magenta]=5
+colorcode[cyan]=6
+colorcode[white]=7
+colorcode[default]=9
+colorcode[k]=$colorcode[black]
+colorcode[r]=$colorcode[red]
+colorcode[g]=$colorcode[green]
+colorcode[y]=$colorcode[yellow]
+colorcode[b]=$colorcode[blue]
+colorcode[m]=$colorcode[magenta]
+colorcode[c]=$colorcode[cyan]
+colorcode[w]=$colorcode[white]
+colorcode[.]=$colorcode[default]
+
+typeset -A attcode
+attcode[none]=00
+attcode[bold]=01
+attcode[faint]=02
+attcode[standout]=03
+attcode[underline]=04
+attcode[blink]=05
+attcode[reverse]=07
+attcode[conceal]=08
+attcode[normal]=22
+attcode[no-standout]=23
+attcode[no-underline]=24
+attcode[no-blink]=25
+attcode[no-reverse]=27
+attcode[no-conceal]=28
+
+coloratom() {
+	local off=$1 atom=$2
+	if [[ $atom[1] == [[:upper:]] ]]; then
+		off=$(( $off + 60 ))
+	fi
+	echo $(( $off + $colorcode[${(L)atom}] ))
+}
+colorword() {
+	local fg=$1 bg=$2 att=$3
+	local -a s
+
+	if [ -n "$fg" ]; then
+		s+=$(coloratom 30 $fg)
+	fi
+	if [ -n "$bg" ]; then
+		s+=$(coloratom 40 $bg)
+	fi
+	if [ -n "$att" ]; then
+		s+=$attcode[$att]
+	fi
+
+	echo "%{"$'\e['${(j:;:)s}m"%}"
+}
+
+prompt_wunjo_setup () {
+	local reset_color=$(colorword . . 00)
+
+	local verbose
+	if [[ $TERM == screen* ]] || [ -n "$STY" ]; then
+		verbose=
+	else
+		verbose=1
+	fi
+
+	local -A pc
+	pc[date]='cyan'
+	pc[time]='Blue'
+	pc[host]='Green'
+	pc[user]='cyan'
+	pc[punc]='yellow'
+	pc[line]='magenta'
+	pc[hist]='green'
+	pc[path]='cyan'
+	pc[#]='Yellow'
+	for cn in ${(k)pc}; do
+		pc[${cn}]=$(colorword $pc[$cn])
+	done
+
+	local p_date p_wami p_line
+
+	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$reset_color"
+
+	p_wami="$pc[user]%n"
+	if [ $verbose ]; then
+		p_wami+="$pc[punc]@$pc[host]%m"
+	fi
+	p_wami+="$reset_color"
+
+	p_line="$pc[line]%y$reset_color"
+
+	PROMPT=
+	if [ $verbose ]; then
+		PROMPT+="$p_date "
+	fi
+	PROMPT+="$pc[path]%(2~.%~.%/)$reset_color"
+	PROMPT+="
+"
+	PROMPT+="$pc[hist]%h$pc[punc]:$reset_color "
+	PROMPT+="$pc[path]%1~$reset_color"
+	PROMPT+=" $pc[#]%#$reset_color "
+
+	RPROMPT=
+	RPROMPT+="$p_wami"
+	RPROMPT+=" $p_line"
+
+	export PROMPT RPROMPT
+}
+
+prompt_wunjo_setup "$@"
+
+# vim:set ft=zsh:
