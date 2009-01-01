@@ -76,7 +76,7 @@ prompt_wunjo_setup () {
 	local reset_color=$(colorword . . 00)
 
 	local verbose
-	if [[ $TERM == screen* ]] || [ -n "$STY" ]; then
+	if [[ $TERM == screen* ]] && [ -n "$STY" ]; then
 		verbose=
 	else
 		verbose=1
