@@ -88,12 +88,13 @@ prompt_wunjo_setup () {
 	pc[line]='magenta'
 	pc[hist]='green'
 	pc[path]='cyan'
+	pc[rc]='red'
 	pc[#]='Yellow'
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
 	done
 
-	local p_date p_wami p_line
+	local p_date p_wami p_line p_rc
 
 	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$reset_color"
 
@@ -110,6 +111,7 @@ prompt_wunjo_setup () {
 		PROMPT+="$p_date "
 	fi
 	PROMPT+="$pc[path]%(2~.%~.%/)$reset_color"
+	PROMPT+="%(?.. $pc[rc]exited %1v$reset_color)"
 	PROMPT+="
 "
 	PROMPT+="$pc[hist]%h$pc[punc]:$reset_color "
@@ -121,6 +123,19 @@ prompt_wunjo_setup () {
 	RPROMPT+=" $p_line"
 
 	export PROMPT RPROMPT
+	precmd_functions+='prompt_wunjo_precmd'
+}
+
+prompt_wunjo_precmd() {
+	local ex=$?
+	psvar=()
+
+	if [[ $ex -ge 128 ]]; then
+		sig=$signals[$ex-127]
+		psvar[1]="sig${(L)sig}"
+	else
+		psvar[1]="$ex"
+	fi
 }
 
 prompt_wunjo_setup "$@"
