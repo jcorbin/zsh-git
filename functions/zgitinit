@@ -45,28 +45,24 @@ zgit_head() {
 	zgit_isgit || return 1
 
 	if [ -z "$zgit_info[head]" ]; then
-		local commit=$(git rev-parse HEAD 2>/dev/null)
-		if [ $? -ne 0 ]; then
-			return 1
-		fi
 		local name=''
-		gtst=(${(f)"$(git status 2>/dev/null)"})
-		if [[ $gtst[1] == '# On branch'* ]]; then
-			name=${${gtst[1]}#\# On branch }
+		name=$(git symbolic-ref -q HEAD)
+		if [ $? -eq 0 ]; then
+			if [[ $name == refs/(heads|tags)/* ]]; then
+				name=${name#refs/(heads|tags)/}
+			fi
 		else
-			name=$(git name-rev --refs='refs/heads/*' --no-undefined --name-only $commit 2>/dev/null)
+			name=$(git name-rev --name-only --always HEAD)
 			if [ $? -ne 0 ]; then
-				name=$(git name-rev --no-undefined --name-only --always $commit 2>/dev/null)
-				if [ $? -ne 0 ]; then
-					return 1
-				fi
+				return 1
+			elif [[ $name == remotes/* ]]; then
+				name=${name#remotes/}
 			fi
 		fi
 		zgit_info[head]=$name
 	fi
 
 	echo $zgit_info[head]
-	return 0
 }
 
 zgit_isclean() {
