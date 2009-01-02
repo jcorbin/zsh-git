@@ -65,10 +65,27 @@ zgit_head() {
 	echo $zgit_info[head]
 }
 
-zgit_isclean() {
-	local -a gtst
-	gtst=(${(f)"$(git status 2>/dev/null)"})
-	if [[ $gtst[2] == 'nothing to commit'* ]]; then
+zgit_isindexclean() {
+	zgit_isgit || return 1
+	if git diff --quiet --cached; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+zgit_isworktreeclean() {
+	zgit_isgit || return 1
+	if git diff --quiet; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+zgit_hasuntracked() {
+	zgit_isgit || return 1
+	if git status | grep '# Untracked files:' >/dev/null 2>&1; then
 		return 0
 	else
 		return 1
