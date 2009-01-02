@@ -92,7 +92,6 @@ prompt_wunjo_setup () {
 	pc[path]='cyan'
 	pc[rc]='red'
 	pc[scm_branch]='Blue'
-	pc[scm_status]='Cyan'
 	pc[#]='Yellow'
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
@@ -152,10 +151,6 @@ prompt_wunjo_scm_status() {
 	zgit_isgit || return
 	local -A pc
 	pc=(${(kv)wunjo_prompt_colors})
-
-	if ! zgit_isclean; then
-		echo " $pc[punc]($pc[scm_status]dirty$pc[punc])$pc[reset]"
-	fi
 }
 
 prompt_wunjo_scm_branch() {
