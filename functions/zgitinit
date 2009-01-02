@@ -52,7 +52,7 @@ zgit_head() {
 				name=${name#refs/(heads|tags)/}
 			fi
 		else
-			name=$(git name-rev --name-only --always HEAD)
+			name=$(git name-rev --name-only --no-undefined --always HEAD)
 			if [ $? -ne 0 ]; then
 				return 1
 			elif [[ $name == remotes/* ]]; then
