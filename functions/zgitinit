@@ -92,6 +92,20 @@ zgit_hasuntracked() {
 	fi
 }
 
+zgit_svnhead() {
+	zgit_isgit || return 1
+
+	if [ -z "$zgit_info[svnhead]" ]; then
+		zgit_info[svnhead]=$(
+			git show --raw HEAD | \
+				grep git-svn-id | \
+					sed -re 's/^\s*git-svn-id: .*@([0-9]+).*$/\1/'
+		)
+	fi
+
+	echo $zgit_info[svnhead]
+}
+
 zgitinit() {
 	chpwd_functions+='zgit_chpwd_hook'
 	preexec_functions+='zgit_preexec_hook'
