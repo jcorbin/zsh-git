@@ -90,6 +90,7 @@ prompt_wunjo_setup () {
 	pc[line]='magenta'
 	pc[hist]='green'
 	pc[path]='Cyan'
+	pc[shortpath]='default'
 	pc[rc]='red'
 	pc[scm_branch]='Blue'
 	pc[scm_commitid]='Yellow'
@@ -126,7 +127,7 @@ prompt_wunjo_setup () {
 	PROMPT+="
 "
 	PROMPT+="$pc[hist]%h$pc[reset] "
-	PROMPT+="$pc[path]%1~$pc[reset]"
+	PROMPT+="$pc[shortpath]%1~$pc[reset]"
 	PROMPT+="\$(prompt_wunjo_scm_branch)"
 	PROMPT+=" $pc[#]%#$pc[reset] "
 
