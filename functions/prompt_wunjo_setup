@@ -120,7 +120,7 @@ prompt_wunjo_setup () {
 	fi
 	PROMPT+="$pc[path]%(2~.%~.%/)$pc[reset]"
 	PROMPT+="%(?.. $pc[rc]exited %1v$pc[reset])"
-	PROMPT+="\$(prompt_wunjo_scm_status \"$pc[punc]\" \"$pc[scm_status]\" \"$pc[reset]\")"
+	PROMPT+="\$(prompt_wunjo_scm_status)"
 	PROMPT+="
 "
 	PROMPT+="$pc[hist]%h$pc[punc]:$pc[reset] "
@@ -150,10 +150,11 @@ prompt_wunjo_precmd() {
 
 prompt_wunjo_scm_status() {
 	zgit_isgit || return
-	local punc=$1 st=$2 reset=$3
+	local -A pc
+	pc=(${(kv)wunjo_prompt_colors})
 
 	if ! zgit_isclean; then
-		echo " $punc(${st}dirty$punc)$reset"
+		echo " $pc[punc]($pc[scm_status]dirty$pc[punc])$pc[reset]"
 	fi
 }
 
