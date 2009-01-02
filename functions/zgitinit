@@ -85,7 +85,9 @@ zgit_isworktreeclean() {
 
 zgit_hasuntracked() {
 	zgit_isgit || return 1
-	if git status | grep '# Untracked files:' >/dev/null 2>&1; then
+	local -a flist
+	flist=($(git ls-files --others --exclude-standard))
+	if [ $#flist -gt 0 ]; then
 		return 0
 	else
 		return 1
