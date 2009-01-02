@@ -89,7 +89,7 @@ prompt_wunjo_setup () {
 	pc[punc]='yellow'
 	pc[line]='magenta'
 	pc[hist]='green'
-	pc[path]='cyan'
+	pc[path]='Cyan'
 	pc[rc]='red'
 	pc[scm_branch]='Blue'
 	pc[scm_commitid]='Yellow'
