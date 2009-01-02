@@ -99,6 +99,9 @@ prompt_wunjo_setup () {
 		pc[${cn}]=$(colorword $pc[$cn])
 	done
 
+	typeset -Ag wunjo_prompt_colors
+	wunjo_prompt_colors=(${(kv)pc})
+
 	local p_date p_wami p_line p_rc
 
 	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$reset_color"
