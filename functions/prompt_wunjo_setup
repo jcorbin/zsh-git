@@ -125,7 +125,7 @@ prompt_wunjo_setup () {
 	PROMPT+="%(?.. $pc[rc]exited %1v$pc[reset])"
 	PROMPT+="
 "
-	PROMPT+="$pc[hist]%h$pc[punc]:$pc[reset] "
+	PROMPT+="$pc[hist]%h$pc[reset] "
 	PROMPT+="$pc[path]%1~$pc[reset]"
 	PROMPT+="\$(prompt_wunjo_scm_branch)"
 	PROMPT+=" $pc[#]%#$pc[reset] "
