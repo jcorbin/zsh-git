@@ -125,7 +125,7 @@ prompt_wunjo_setup () {
 "
 	PROMPT+="$pc[hist]%h$pc[punc]:$pc[reset] "
 	PROMPT+="$pc[path]%1~$pc[reset]"
-	PROMPT+="\$(prompt_wunjo_scm_branch \"$pc[punc]\" \"$pc[scm_branch]\" \"$pc[reset]\")"
+	PROMPT+="\$(prompt_wunjo_scm_branch)"
 	PROMPT+=" $pc[#]%#$pc[reset] "
 
 	RPROMPT=
@@ -160,9 +160,10 @@ prompt_wunjo_scm_status() {
 
 prompt_wunjo_scm_branch() {
 	zgit_isgit || return
-	local punc=$1 br=$2 reset=$3
+	local -A pc
+	pc=(${(kv)wunjo_prompt_colors})
 
-	echo "$punc:$br$(zgit_head)$reset"
+	echo "$pc[punc]:$pc[scm_branch]$(zgit_head)$pc[reset]"
 }
 
 prompt_wunjo_setup "$@"
