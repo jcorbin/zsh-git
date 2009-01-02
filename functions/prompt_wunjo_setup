@@ -157,11 +157,16 @@ prompt_wunjo_scm_status() {
 
 	head=$(zgit_head)
 	gitcommit=$(git rev-parse --short $head)
+	svncommit=$(zgit_svnhead)
 
 	local -a commits
 
 	if [ -n "$gitcommit" ]; then
 		commits+="$pc[default]git$pc[punc]:$pc[scm_commitid]$gitcommit$pc[punc]"
+	fi
+
+	if [ -n "$svncommit" ]; then
+		commits+="$pc[default]svn$pc[punc]:$pc[scm_commitid]$svncommit$pc[punc]"
 	fi
 
 	echo -n "$pc[punc]:$pc[scm_branch]$head$pc[punc](${(j:, :)commits})"
