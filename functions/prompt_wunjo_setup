@@ -72,7 +72,7 @@ colorword() {
 	echo "%{"$'\e['${(j:;:)s}m"%}"
 }
 
-prompt_wunjo_setup () {
+prompt_wunjo_setup() {
 	local verbose
 	if [[ $TERM == screen* ]] && [ -n "$STY" ]; then
 		verbose=
