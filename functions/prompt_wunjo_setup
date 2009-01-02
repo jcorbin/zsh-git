@@ -92,6 +92,7 @@ prompt_wunjo_setup () {
 	pc[path]='cyan'
 	pc[rc]='red'
 	pc[scm_branch]='Blue'
+	pc[scm_commitid]='Yellow'
 	pc[scm_status_dirty]='Red'
 	pc[scm_status_staged]='Cyan'
 	pc[#]='Yellow'
@@ -153,6 +154,17 @@ prompt_wunjo_scm_status() {
 	zgit_isgit || return
 	local -A pc
 	pc=(${(kv)wunjo_prompt_colors})
+
+	head=$(zgit_head)
+	gitcommit=$(git rev-parse --short $head)
+
+	local -a commits
+
+	if [ -n "$gitcommit" ]; then
+		commits+="$pc[default]git$pc[punc]:$pc[scm_commitid]$gitcommit$pc[punc]"
+	fi
+
+	echo -n "$pc[punc]:$pc[scm_branch]$head$pc[punc](${(j:, :)commits})"
 }
 
 prompt_wunjo_scm_branch() {
