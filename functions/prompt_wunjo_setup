@@ -158,7 +158,7 @@ prompt_wunjo_scm_branch() {
 	zgit_isgit || return
 	local punc=$1 br=$2 reset=$3
 
-	echo "$punc($br$(zgit_head)$punc)$reset"
+	echo "$punc:$br$(zgit_head)$reset"
 }
 
 prompt_wunjo_setup "$@"
