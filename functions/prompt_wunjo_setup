@@ -73,8 +73,6 @@ colorword() {
 }
 
 prompt_wunjo_setup () {
-	local reset_color=$(colorword . . 00)
-
 	local verbose
 	if [[ $TERM == screen* ]] && [ -n "$STY" ]; then
 		verbose=
@@ -83,6 +81,7 @@ prompt_wunjo_setup () {
 	fi
 
 	local -A pc
+	pc[default]='default'
 	pc[date]='cyan'
 	pc[time]='Blue'
 	pc[host]='Green'
@@ -98,35 +97,36 @@ prompt_wunjo_setup () {
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
 	done
+	pc[reset]=$(colorword . . 00)
 
 	typeset -Ag wunjo_prompt_colors
 	wunjo_prompt_colors=(${(kv)pc})
 
 	local p_date p_wami p_line p_rc
 
-	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$reset_color"
+	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$pc[reset]"
 
 	p_wami="$pc[user]%n"
 	if [ $verbose ]; then
 		p_wami+="$pc[punc]@$pc[host]%m"
 	fi
-	p_wami+="$reset_color"
+	p_wami+="$pc[reset]"
 
-	p_line="$pc[line]%y$reset_color"
+	p_line="$pc[line]%y$pc[reset]"
 
 	PROMPT=
 	if [ $verbose ]; then
 		PROMPT+="$p_date "
 	fi
-	PROMPT+="$pc[path]%(2~.%~.%/)$reset_color"
-	PROMPT+="%(?.. $pc[rc]exited %1v$reset_color)"
-	PROMPT+="\$(prompt_wunjo_scm_status \"$pc[punc]\" \"$pc[scm_status]\" \"$reset_color\")"
+	PROMPT+="$pc[path]%(2~.%~.%/)$pc[reset]"
+	PROMPT+="%(?.. $pc[rc]exited %1v$pc[reset])"
+	PROMPT+="\$(prompt_wunjo_scm_status \"$pc[punc]\" \"$pc[scm_status]\" \"$pc[reset]\")"
 	PROMPT+="
 "
-	PROMPT+="$pc[hist]%h$pc[punc]:$reset_color "
-	PROMPT+="$pc[path]%1~$reset_color"
-	PROMPT+="\$(prompt_wunjo_scm_branch \"$pc[punc]\" \"$pc[scm_branch]\" \"$reset_color\")"
-	PROMPT+=" $pc[#]%#$reset_color "
+	PROMPT+="$pc[hist]%h$pc[punc]:$pc[reset] "
+	PROMPT+="$pc[path]%1~$pc[reset]"
+	PROMPT+="\$(prompt_wunjo_scm_branch \"$pc[punc]\" \"$pc[scm_branch]\" \"$pc[reset]\")"
+	PROMPT+=" $pc[#]%#$pc[reset] "
 
 	RPROMPT=
 	RPROMPT+="$p_wami"
