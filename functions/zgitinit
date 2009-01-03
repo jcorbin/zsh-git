@@ -94,6 +94,17 @@ zgit_hasuntracked() {
 	fi
 }
 
+zgit_hasunmerged() {
+	zgit_isgit || return 1
+	local -a flist
+	flist=($(git ls-files -u))
+	if [ $#flist -gt 0 ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 zgit_svnhead() {
 	zgit_isgit || return 1
 
