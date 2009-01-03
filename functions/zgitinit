@@ -97,15 +97,14 @@ zgit_hasuntracked() {
 zgit_svnhead() {
 	zgit_isgit || return 1
 
-	if [ -z "$zgit_info[svnhead]" ]; then
-		zgit_info[svnhead]=$(
-			git show --raw HEAD | \
-				grep git-svn-id | \
-					sed -re 's/^\s*git-svn-id: .*@([0-9]+).*$/\1/'
-		)
+	local commit=$1
+	if [ -z "$commit" ]; then
+		commit='HEAD'
 	fi
 
-	echo $zgit_info[svnhead]
+	git show --raw $commit | \
+		grep git-svn-id | \
+			sed -re 's/^\s*git-svn-id: .*@([0-9]+).*$/\1/'
 }
 
 zgitinit() {
