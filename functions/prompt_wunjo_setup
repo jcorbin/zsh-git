@@ -164,7 +164,7 @@ prompt_wunjo_scm_status() {
 	fi
 
 	if [ -n "$svncommit" ]; then
-		commits+="$pc[default]svn$pc[punc]:$pc[scm_commitid]$svncommit"
+		commits+="$pc[default]svn$pc[punc]:$pc[scm_commitid]r$svncommit"
 	fi
 
 	echo -n "$pc[punc]:$pc[scm_branch]$head ${(j: :)commits}"
