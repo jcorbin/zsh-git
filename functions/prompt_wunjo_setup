@@ -105,21 +105,15 @@ prompt_wunjo_setup() {
 	typeset -Ag wunjo_prompt_colors
 	wunjo_prompt_colors=(${(kv)pc})
 
-	local p_date p_wami p_line p_rc
+	local p_date p_line p_rc
 
 	p_date="$pc[date]%D{%Y-%m-%d} $pc[time]%D{%T}$pc[reset]"
-
-	p_wami="$pc[user]%n"
-	if [ $verbose ]; then
-		p_wami+="$pc[punc]@$pc[host]%m"
-	fi
-	p_wami+="$pc[reset]"
 
 	p_line="$pc[line]%y$pc[reset]"
 
 	PROMPT=
 	if [ $verbose ]; then
-		PROMPT+="$p_date "
+		PROMPT+="$pc[host]%m$pc[reset] "
 	fi
 	PROMPT+="$pc[path]%(2~.%~.%/)$pc[reset]"
 	PROMPT+="\$(prompt_wunjo_scm_status)"
@@ -132,7 +126,10 @@ prompt_wunjo_setup() {
 	PROMPT+=" $pc[#]%#$pc[reset] "
 
 	RPROMPT=
-	RPROMPT+="$p_wami"
+	if [ $verbose ]; then
+		RPROMPT+="$p_date "
+	fi
+	RPROMPT+="$pc[user]%n$pc[reset]"
 	RPROMPT+=" $p_line"
 
 	export PROMPT RPROMPT
