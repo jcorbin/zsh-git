@@ -199,6 +199,10 @@ prompt_wunjo_scm_branch() {
 		dirty+='!'
 	fi
 
+	if zgit_hasunmerged; then
+		dirty+='*'
+	fi
+
 	if zgit_hasuntracked; then
 		dirty+='?'
 	fi
