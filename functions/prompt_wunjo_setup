@@ -164,13 +164,12 @@ prompt_wunjo_scm_status() {
 
 	gitsvn=$(git rev-parse --verify -q --short git-svn)
 	if [ $? -eq 0 ]; then
-		svncommit=$(zgit_svnhead)
 		gitsvnrev=$(zgit_svnhead $gitsvn)
-		if [ -n "$svncommit" ]; then
-			commits+="$pc[default]svn$pc[punc]:$pc[scm_commitid]r$svncommit"
-		fi
-		if [ "$gitsvnrev" != "$svncommit" ]; then
-			commits+="$pc[default]git-svn$pc[punc]:$pc[scm_commitid]r$gitsvnrev$pc[punc]($pc[scm_commitid]$gitsvn$pc[punc])"
+		if [ -n "$gitsvnrev" ]; then
+			local svninfo=''
+			svninfo+="$pc[default]svn$pc[punc]:$pc[scm_commitid]r$gitsvnrev"
+			svninfo+="$pc[punc]($pc[scm_commitid]$gitsvn$pc[punc])"
+			commits+=$svninfo
 		fi
 	fi
 
