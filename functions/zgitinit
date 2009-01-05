@@ -118,6 +118,31 @@ zgit_svnhead() {
 			sed -re 's/^\s*git-svn-id: .*@([0-9]+).*$/\1/'
 }
 
+zgit_rebaseinfo() {
+	zgit_isgit || return 1
+	dotest=$zgit_info[dir]/.dotest-merge
+
+	if ! [ -d $dotest ]; then
+		if [ -d .dotest ]; then
+			dotest=.dotest
+		else
+			return 1
+		fi
+	fi
+
+	zgit_info[dotest]=$dotest
+
+	zgit_info[rb_onto]=$(cat "$dotest/onto")
+	if [ -f "$dotest/orig-head" ]; then
+		zgit_info[rb_head]=$(cat "$dotest/orig-head")
+	elif [ -f "$dotest/head" ]; then
+		zgit_info[rb_head]=$(cat "$dotest/head")
+	fi
+	zgit_info[rb_head_name]=$(cat "$dotest/head-name")
+
+	return 0
+}
+
 zgitinit() {
 	chpwd_functions+='zgit_chpwd_hook'
 	preexec_functions+='zgit_preexec_hook'
