@@ -168,6 +168,12 @@ prompt_wunjo_scm_status() {
 
 		commits+="rebasing $orig$pc[reset]"
 		commits+="onto $onto$pc[reset]"
+
+		local -a revs
+		revs=($(git rev-list $zgit_info[rb_onto]..HEAD))
+		if [ $#revs -gt 0 ]; then
+			commits+="$#revs commits in"
+		fi
 	elif [ -n "$gitcommit" ]; then
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
 	fi
