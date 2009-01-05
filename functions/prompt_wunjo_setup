@@ -167,7 +167,12 @@ prompt_wunjo_scm_status() {
 		gitsvnrev=$(zgit_svnhead $gitsvn)
 		if [ -n "$gitsvnrev" ]; then
 			local svninfo=''
+			local -a revs
 			svninfo+="$pc[default]svn$pc[punc]:$pc[scm_commitid]r$gitsvnrev"
+			revs=($(git rev-list git-svn..HEAD))
+			if [ $#revs -gt 0 ]; then
+				svninfo+="$pc[punc]@$pc[default]HEAD~$#revs"
+			fi
 			svninfo+="$pc[punc]($pc[scm_commitid]$gitsvn$pc[punc])"
 			commits+=$svninfo
 		fi
