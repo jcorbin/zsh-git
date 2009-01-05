@@ -158,7 +158,17 @@ prompt_wunjo_scm_status() {
 
 	local -a commits
 
-	if [ -n "$gitcommit" ]; then
+	if zgit_rebaseinfo; then
+		onto_commit=$(git rev-parse --short $zgit_info[rb_onto])
+		onto_name=$(git name-rev --name-only $zgit_info[rb_onto])
+		orig_name=$(git name-rev --name-only $zgit_info[rb_head])
+		orig_commit=$(git rev-parse --short $zgit_info[rb_head])
+		orig="$pc[scm_branch]$orig_name$pc[punc]($pc[scm_commitid]$orig_commit$pc[punc])"
+		onto="$pc[scm_branch]$onto_name$pc[punc]($pc[scm_commitid]$onto_commit$pc[punc])"
+
+		commits+="rebasing $orig$pc[reset]"
+		commits+="onto $onto$pc[reset]"
+	elif [ -n "$gitcommit" ]; then
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
 	fi
 
