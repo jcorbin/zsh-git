@@ -92,10 +92,10 @@ prompt_wunjo_setup() {
 	pc[path]='Cyan'
 	pc[shortpath]='default'
 	pc[rc]='red'
-	pc[scm_branch]='Blue'
+	pc[scm_branch]='Cyan'
 	pc[scm_commitid]='Yellow'
 	pc[scm_status_dirty]='Red'
-	pc[scm_status_staged]='Cyan'
+	pc[scm_status_staged]='Green'
 	pc[#]='Yellow'
 	for cn in ${(k)pc}; do
 		pc[${cn}]=$(colorword $pc[$cn])
@@ -168,7 +168,7 @@ prompt_wunjo_scm_status() {
 		if [ -n "$gitsvnrev" ]; then
 			local svninfo=''
 			local -a revs
-			svninfo+="$pc[default]svn$pc[punc]:$pc[scm_commitid]r$gitsvnrev"
+			svninfo+="$pc[default]svn$pc[punc]:$pc[scm_branch]r$gitsvnrev"
 			revs=($(git rev-list git-svn..HEAD))
 			if [ $#revs -gt 0 ]; then
 				svninfo+="$pc[punc]@$pc[default]HEAD~$#revs"
