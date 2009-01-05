@@ -172,8 +172,8 @@ prompt_wunjo_scm_status() {
 			revs=($(git rev-list git-svn..HEAD))
 			if [ $#revs -gt 0 ]; then
 				svninfo+="$pc[punc]@$pc[default]HEAD~$#revs"
+				svninfo+="$pc[punc]($pc[scm_commitid]$gitsvn$pc[punc])"
 			fi
-			svninfo+="$pc[punc]($pc[scm_commitid]$gitsvn$pc[punc])"
 			commits+=$svninfo
 		fi
 	fi
