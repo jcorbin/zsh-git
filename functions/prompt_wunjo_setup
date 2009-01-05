@@ -159,7 +159,7 @@ prompt_wunjo_scm_status() {
 	local -a commits
 
 	if [ -n "$gitcommit" ]; then
-		commits+="$pc[default]git$pc[punc]:$pc[scm_commitid]$gitcommit"
+		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
 	fi
 
 	gitsvn=$(git rev-parse --verify -q --short git-svn)
@@ -178,7 +178,9 @@ prompt_wunjo_scm_status() {
 		fi
 	fi
 
-	echo -n "$pc[punc]:$pc[scm_branch]$head ${(j: :)commits}"
+	if [ $#commits -gt 0 ]; then
+		echo -n " ${(j: :)commits}"
+	fi
 }
 
 prompt_wunjo_scm_branch() {
@@ -192,12 +194,17 @@ prompt_wunjo_scm_branch() {
 		echo -n "$pc[scm_status_staged]+"
 	fi
 
+	local -a dirty
 	if ! zgit_isworktreeclean; then
-		echo -n "$pc[scm_status_dirty]!"
+		dirty+='!'
 	fi
 
 	if zgit_hasuntracked; then
-		echo -n "$pc[scm_status_dirty]?"
+		dirty+='?'
+	fi
+
+	if [ $#dirty -gt 0 ]; then
+		echo -n "$pc[scm_status_dirty]${(j::)dirty}"
 	fi
 
 	echo $pc[reset]
