@@ -181,6 +181,22 @@ prompt_wunjo_scm_status() {
 		fi
 	elif [ -n "$gitcommit" ]; then
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
+		base=$(git branch-base)
+		if [ $? -eq 0 ]; then
+			local -a revs
+			revs=($(git rev-list $base..HEAD))
+			if [ $#revs -gt 0 ]; then
+				base_name=$(git name-rev --name-only $base)
+				base=$(git rev-parse --short $base)
+				local word_commits
+				if [ $#revs -gt 1 ]; then
+					word_commits='commits'
+				else
+					word_commits='commit'
+				fi
+				commits+="$#revs $word_commits since $pc[scm_branch]$base_name$pc[punc]($pc[scm_commitid]$base$pc[punc])$pc[reset]"
+			fi
+		fi
 	fi
 
 	gitsvn=$(git rev-parse --verify -q --short git-svn)
