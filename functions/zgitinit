@@ -31,6 +31,7 @@ zgit_info_update() {
 	fi
 
 	zgit_info[dir]=$gitdir
+	zgit_info[bare]=$(git rev-parse --is-bare-repository)
 }
 
 zgit_isgit() {
@@ -38,6 +39,15 @@ zgit_isgit() {
 		return 1
 	else
 		return 0
+	fi
+}
+
+zgit_isbare() {
+	zgit_isgit || return
+	if [ "$zgit_info[bare]" = "true" ]; then
+		return 0
+	else
+		return 1
 	fi
 }
 
