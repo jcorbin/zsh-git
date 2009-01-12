@@ -154,7 +154,7 @@ prompt_wunjo_scm_status() {
 	pc=(${(kv)wunjo_prompt_colors})
 
 	head=$(zgit_head)
-	gitcommit=$(git rev-parse --short $head)
+	gitcommit=$(git rev-parse --short $head 2>/dev/null)
 
 	local -a commits
 

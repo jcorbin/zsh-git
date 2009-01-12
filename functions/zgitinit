@@ -67,7 +67,7 @@ zgit_head() {
 
 zgit_isindexclean() {
 	zgit_isgit || return 1
-	if git diff --quiet --cached; then
+	if git diff --quiet --cached 2>/dev/null; then
 		return 0
 	else
 		return 1
@@ -76,7 +76,7 @@ zgit_isindexclean() {
 
 zgit_isworktreeclean() {
 	zgit_isgit || return 1
-	if git diff --quiet; then
+	if git diff --quiet 2>/dev/null; then
 		return 0
 	else
 		return 1
