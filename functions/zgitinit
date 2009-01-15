@@ -32,6 +32,14 @@ zgit_info_update() {
 
 	zgit_info[dir]=$gitdir
 	zgit_info[bare]=$(git rev-parse --is-bare-repository)
+
+	local branch=$(git symbolic-ref HEAD 2>/dev/null)
+	if [ $? -eq 0 ]; then
+		branch=${branch##*/}
+	else
+		branch=$(git name-rev --name-only --always HEAD)
+	fi
+	zgit_info[branch]=$branch
 }
 
 zgit_isgit() {
