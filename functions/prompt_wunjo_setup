@@ -206,7 +206,10 @@ prompt_wunjo_scm_status() {
 			fi
 
 			if [ -n "$tracked" ]; then
-				local track_name=${zgit_info[track_merge]##*/}
+				local track_name=${zgit_info[track_merge]}
+				if [[ $zgit_info[track_remote] == "." ]]; then
+					track_name=${track_name##*/}
+				fi
 				tracked=$(git rev-parse --short $tracked)
 				commits+="tracking $pc[scm_branch]$track_name$pc[punc]"
 				if [[ "$tracked" != "$gitcommit" ]]; then
