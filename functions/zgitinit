@@ -40,6 +40,16 @@ zgit_info_update() {
 		branch=$(git name-rev --name-only --always HEAD)
 	fi
 	zgit_info[branch]=$branch
+
+	local remote=$(git config branch.$branch.remote)
+	if [ $? -eq 0 ]; then # tracking branch
+		zgit_info[track_remote]=$remote
+		local merge=$(git config branch.$branch.merge)
+		if [ $remote != "." ]; then
+			merge=$remote/$(basename $merge)
+		fi
+		zgit_info[track_merge]=$merge
+	fi
 }
 
 zgit_isgit() {
