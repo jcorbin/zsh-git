@@ -181,7 +181,7 @@ prompt_wunjo_scm_status() {
 		fi
 	elif [ -n "$gitcommit" ]; then
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
-		base=$(git branch-base)
+		base=$(git branch-base 2>/dev/null)
 		if [ $? -eq 0 ]; then
 			local -a revs
 			revs=($(git rev-list $base..HEAD))
