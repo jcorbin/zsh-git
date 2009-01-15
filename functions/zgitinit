@@ -42,7 +42,7 @@ zgit_info_update() {
 	zgit_info[branch]=$branch
 
 	local remote=$(git config branch.$branch.remote)
-	if [ $? -eq 0 ]; then # tracking branch
+	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
 		zgit_info[track_remote]=$remote
 		local merge=$(git config branch.$branch.merge)
 		if [ $remote != "." ]; then
