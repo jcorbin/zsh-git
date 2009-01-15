@@ -181,13 +181,12 @@ prompt_wunjo_scm_status() {
 		fi
 	elif [ -n "$gitcommit" ]; then
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
-		base=$(git branch-base 2>/dev/null)
-		if [ $? -eq 0 ]; then
+		if [ -n "$zgit_info[track_merge]" ]; then
 			local -a revs
-			revs=($(git rev-list $base..HEAD))
+			revs=($(git rev-list --reverse $zgit_info[track_merge]..HEAD))
 			if [ $#revs -gt 0 ]; then
-				base_name=$(git name-rev --name-only $base)
-				base=$(git rev-parse --short $base)
+				local base_name=$(git name-rev --name-only $revs[1]~1)
+				local base=$(git rev-parse --short $revs[1]~1)
 				local word_commits
 				if [ $#revs -gt 1 ]; then
 					word_commits='commits'
