@@ -34,45 +34,6 @@ zgit_info_update() {
 	zgit_info[bare]=$(git rev-parse --is-bare-repository)
 }
 
-zgit_branch() {
-	local branch=$(git symbolic-ref HEAD 2>/dev/null)
-	if [ $? -eq 0 ]; then
-		branch=${branch##*/}
-	else
-		branch=$(git name-rev --name-only --always HEAD)
-	fi
-	echo $branch
-	return 0
-}
-
-zgit_tracking_remote() {
-	local branch
-	if [ -z "$1" ]; then
-		branch=$(zgit_branch)
-	else
-		branch=$1
-	fi
-	local remote=$(git config branch.$branch.remote)
-	echo $remote
-	return 0
-}
-
-zgit_tracking_merge() {
-	local branch=$(zgit_branch)
-	local remote=$(zgit_tracking_remote $branch)
-	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
-		zgit_info[track_remote]=$remote
-		local merge=$(git config branch.$branch.merge)
-		if [ $remote != "." ]; then
-			merge=$remote/$(basename $merge)
-		fi
-		echo $merge
-		return 0
-	else
-		return 1
-	fi
-}
-
 zgit_isgit() {
 	if [ -z "$zgit_info[dir]" ]; then
 		return 1
@@ -112,6 +73,44 @@ zgit_head() {
 	fi
 
 	echo $zgit_info[head]
+}
+
+zgit_branch() {
+	local branch=$(git symbolic-ref HEAD 2>/dev/null)
+	if [ $? -eq 0 ]; then
+		branch=${branch##*/}
+	else
+		branch=$(git name-rev --name-only --always HEAD)
+	fi
+	echo $branch
+	return 0
+}
+
+zgit_tracking_remote() {
+	local branch
+	if [ -z "$1" ]; then
+		branch=$(zgit_branch)
+	else
+		branch=$1
+	fi
+	local remote=$(git config branch.$branch.remote)
+	echo $remote
+	return 0
+}
+
+zgit_tracking_merge() {
+	local branch=$(zgit_branch)
+	local remote=$(zgit_tracking_remote $branch)
+	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
+		local merge=$(git config branch.$branch.merge)
+		if [ $remote != "." ]; then
+			merge=$remote/$(basename $merge)
+		fi
+		echo $merge
+		return 0
+	else
+		return 1
+	fi
 }
 
 zgit_isindexclean() {
