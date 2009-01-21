@@ -76,6 +76,9 @@ zgit_head() {
 }
 
 zgit_branch() {
+	zgit_isgit || return 1
+	zgit_isbare && return 1
+
 	local branch=$(git symbolic-ref HEAD 2>/dev/null)
 	if [ $? -eq 0 ]; then
 		branch=${branch##*/}
@@ -87,6 +90,9 @@ zgit_branch() {
 }
 
 zgit_tracking_remote() {
+	zgit_isgit || return 1
+	zgit_isbare && return 1
+
 	local branch
 	if [ -z "$1" ]; then
 		branch=$(zgit_branch)
@@ -99,6 +105,9 @@ zgit_tracking_remote() {
 }
 
 zgit_tracking_merge() {
+	zgit_isgit || return 1
+	zgit_isbare && return 1
+
 	local branch=$(zgit_branch)
 	local remote=$(zgit_tracking_remote $branch)
 	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
