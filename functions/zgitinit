@@ -102,6 +102,7 @@ zgit_tracking_remote() {
 		branch=$1
 	elif [ -z "$zgit_info[branch]" ]; then
 		branch=$(zgit_branch)
+		[ $? -ne 0 ] && return 1
 	else
 		branch=$zgit_info[branch]
 	fi
@@ -124,12 +125,14 @@ zgit_tracking_merge() {
 	local branch
 	if [ -z "$zgit_info[branch]" ]; then
 		branch=$(zgit_branch)
+		[ $? -ne 0 ] && return 1
 	else
 		branch=$zgit_info[branch]
 	fi
 
 	local remote=$(zgit_tracking_remote $branch)
-	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
+	[ $? -ne 0 ] && return 1
+	if [ -n "$remote" ]; then # tracking branch
 		local merge=$(git config branch.$branch.merge)
 		if [ $remote != "." ]; then
 			merge=$remote/$(basename $merge)
