@@ -79,13 +79,17 @@ zgit_branch() {
 	zgit_isgit || return 1
 	zgit_isbare && return 1
 
-	local branch=$(git symbolic-ref HEAD 2>/dev/null)
-	if [ $? -eq 0 ]; then
-		branch=${branch##*/}
-	else
-		branch=$(git name-rev --name-only --always HEAD)
+	if [ -z "$zgit_info[branch]" ]; then
+		local branch=$(git symbolic-ref HEAD 2>/dev/null)
+		if [ $? -eq 0 ]; then
+			branch=${branch##*/}
+		else
+			branch=$(git name-rev --name-only --always HEAD)
+		fi
+		zgit_info[branch]=$branch
 	fi
-	echo $branch
+
+	echo $zgit_info[branch]
 	return 0
 }
 
@@ -94,13 +98,22 @@ zgit_tracking_remote() {
 	zgit_isbare && return 1
 
 	local branch
-	if [ -z "$1" ]; then
+	if [ -n "$1" ]; then
+		branch=$1
+	elif [ -z "$zgit_info[branch]" ]; then
 		branch=$(zgit_branch)
 	else
-		branch=$1
+		branch=$zgit_info[branch]
 	fi
-	local remote=$(git config branch.$branch.remote)
-	echo $remote
+
+	local k="tracking_$branch"
+	local remote
+	if [ -z "$zgit_info[$k]" ]; then
+		remote=$(git config branch.$branch.remote)
+		zgit_info[$k]=$remote
+	fi
+
+	echo $zgit_info[$k]
 	return 0
 }
 
@@ -108,7 +121,13 @@ zgit_tracking_merge() {
 	zgit_isgit || return 1
 	zgit_isbare && return 1
 
-	local branch=$(zgit_branch)
+	local branch
+	if [ -z "$zgit_info[branch]" ]; then
+		branch=$(zgit_branch)
+	else
+		branch=$zgit_info[branch]
+	fi
+
 	local remote=$(zgit_tracking_remote $branch)
 	if [ -n "$remote" ] && [ $? -eq 0 ]; then # tracking branch
 		local merge=$(git config branch.$branch.merge)
