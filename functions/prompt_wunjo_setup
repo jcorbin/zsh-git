@@ -1,5 +1,7 @@
 # wunjo prompt theme
 
+setopt promptsubst
+
 autoload -U zgitinit
 zgitinit
 
