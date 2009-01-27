@@ -1,0 +1,3 @@
+- Fix rebase info for Git 1.6
+- Look into using tput for coloring instead of baking our own ansi codes.
+- Wunjo prompt is has too much git logic in it, refactor that back into data collectors in zgitinit.
