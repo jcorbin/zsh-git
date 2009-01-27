@@ -1,0 +1,22 @@
+This is my git-enabled zsh prompt.
+
+I got fed up with looking at everyone's half-baked kludges, so I decided to try
+to do better.
+
+The git integration bits are mostly separated into a module called 'zgitinit',
+where as the prompt is a standard zsh prompt theme.
+
+To use this, you need to get the files in functions somewhere that zsh can find
+them, here's two way so to do that:
+
+System wide:
+  % sudo cp /path/to-wunjo-zsh-git/functions/* /usr/local/share/zsh/site-functions
+
+or just for your user:
+  % mkdir -p ~/.zsh/func
+  % cp /path/to-wunjo-zsh-git/functions/* ~/.zsh/func
+  % cat >> ~/.zshenv
+  fpath=($fpath $HOME/.zsh/func)
+  typeset -U fpath
+
+Example minimal zshrc is in zshrc.
