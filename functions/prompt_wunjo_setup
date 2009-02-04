@@ -154,15 +154,15 @@ prompt_wunjo_scm_status() {
 	pc=(${(kv)wunjo_prompt_colors})
 
 	head=$(zgit_head)
-	gitcommit=$(git rev-parse --short $head 2>/dev/null)
+	gitcommit=$(git describe --always $head 2>/dev/null)
 
 	local -a commits
 
 	if zgit_rebaseinfo; then
-		onto_commit=$(git rev-parse --short $zgit_info[rb_onto])
+		orig_commit=$(git describe --always $zgit_info[rb_head])
 		onto_name=$(git name-rev --name-only $zgit_info[rb_onto])
 		orig_name=$(git name-rev --name-only $zgit_info[rb_head])
-		orig_commit=$(git rev-parse --short $zgit_info[rb_head])
+		onto_commit=$(git describe --always $zgit_info[rb_onto])
 		orig="$pc[scm_branch]$orig_name$pc[punc]($pc[scm_commitid]$orig_commit$pc[punc])"
 		onto="$pc[scm_branch]$onto_name$pc[punc]($pc[scm_commitid]$onto_commit$pc[punc])"
 
@@ -184,14 +184,14 @@ prompt_wunjo_scm_status() {
 		local track_merge=$(zgit_tracking_merge)
 		if [ -n "$track_merge" ]; then
 			local track_remote=$(zgit_tracking_remote)
-			local tracked=$(git rev-parse $track_merge)
+			local tracked=$(git describe --always $track_merge)
 
 			local -a revs
 			revs=($(git rev-list --reverse $track_merge..HEAD))
 			if [ $#revs -gt 0 ]; then
-				local base=$(git rev-parse $revs[1]~1)
+				local base=$(git describe --always $revs[1]~1)
 				local base_name=$(git name-rev --name-only $base)
-				local base_short=$(git rev-parse --short $base)
+				local base_short=$(git describe --always $base)
 				local word_commits
 				if [ $#revs -gt 1 ]; then
 					word_commits='commits'
@@ -212,7 +212,7 @@ prompt_wunjo_scm_status() {
 				if [[ $track_remote == "." ]]; then
 					track_name=${track_name##*/}
 				fi
-				tracked=$(git rev-parse --short $tracked)
+				tracked=$(git describe --always $tracked)
 				commits+="tracking $pc[scm_branch]$track_name$pc[punc]"
 				if [[ "$tracked" != "$gitcommit" ]]; then
 					commits[$#commits]+="($pc[scm_commitid]$tracked$pc[punc])"
@@ -225,6 +225,7 @@ prompt_wunjo_scm_status() {
 	gitsvn=$(git rev-parse --verify -q --short git-svn)
 	if [ $? -eq 0 ]; then
 		gitsvnrev=$(zgit_svnhead $gitsvn)
+		gitsvn=$(git describe --always $gitsvn)
 		if [ -n "$gitsvnrev" ]; then
 			local svninfo=''
 			local -a revs
