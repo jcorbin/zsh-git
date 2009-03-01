@@ -178,7 +178,7 @@ prompt_wunjo_scm_status() {
 		local -a revs
 		revs=($(git rev-list $zgit_info[rb_onto]..HEAD))
 		if [ $#revs -gt 0 ]; then
-			commits+="$#revs commits in"
+			commits+="\n$#revs commits in"
 		fi
 
 		if [ -f $zgit_info[dotest]/message ]; then
