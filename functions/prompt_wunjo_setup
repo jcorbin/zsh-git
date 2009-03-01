@@ -160,10 +160,10 @@ prompt_wunjo_scm_status() {
 
 	if zgit_rebaseinfo; then
 		orig_commit=$(git describe --always $zgit_info[rb_head])
-		onto_name=$(git name-rev --name-only $zgit_info[rb_onto])
 		orig_name=$(git name-rev --name-only $zgit_info[rb_head])
-		onto_commit=$(git describe --always $zgit_info[rb_onto])
 		orig="$pc[scm_branch]$orig_name$pc[punc]($pc[scm_commitid]$orig_commit$pc[punc])"
+		onto_commit=$(git describe --always $zgit_info[rb_onto])
+		onto_name=$(git name-rev --name-only $zgit_info[rb_onto])
 		onto="$pc[scm_branch]$onto_name$pc[punc]($pc[scm_commitid]$onto_commit$pc[punc])"
 
 		commits+="rebasing $orig$pc[reset]"
