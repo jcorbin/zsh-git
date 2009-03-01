@@ -212,6 +212,7 @@ zgit_rebaseinfo() {
 	zgit_info[dotest]=$dotest
 
 	zgit_info[rb_onto]=$(cat "$dotest/onto")
+	zgit_info[rb_upstream]=$(cat "$dotest/upstream")
 	if [ -f "$dotest/orig-head" ]; then
 		zgit_info[rb_head]=$(cat "$dotest/orig-head")
 	elif [ -f "$dotest/head" ]; then
