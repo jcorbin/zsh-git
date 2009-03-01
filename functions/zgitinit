@@ -199,14 +199,14 @@ zgit_svnhead() {
 
 zgit_rebaseinfo() {
 	zgit_isgit || return 1
-	dotest=$zgit_info[dir]/.dotest-merge
-
-	if ! [ -d $dotest ]; then
-		if [ -d .dotest ]; then
-			dotest=.dotest
-		else
-			return 1
-		fi
+	if [ -d $zgit_info[dir]/rebase-merge ]; then
+		dotest=$zgit_info[dir]/rebase-merge
+	elif [ -d $zgit_info[dir]/.dotest-merge ]; then
+		dotest=$zgit_info[dir]/.dotest-merge
+	elif [ -d .dotest ]; then
+		dotest=.dotest
+	else
+		return 1
 	fi
 
 	zgit_info[dotest]=$dotest
