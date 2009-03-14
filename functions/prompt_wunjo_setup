@@ -189,41 +189,43 @@ prompt_wunjo_scm_status() {
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
 		local track_merge=$(zgit_tracking_merge)
 		if [ -n "$track_merge" ]; then
-			local track_remote=$(zgit_tracking_remote)
-			local tracked=$(git describe --always $track_merge)
+			if git rev-parse --verify -q $merge; then
+				local track_remote=$(zgit_tracking_remote)
+				local tracked=$(git describe --always $track_merge 2>/dev/null)
 
-			local -a revs
-			revs=($(git rev-list --reverse $track_merge..HEAD))
-			if [ $#revs -gt 0 ]; then
-				local base=$(git describe --always $revs[1]~1)
-				local base_name=$(git name-rev --name-only $base)
-				local base_short=$(git describe --always $base)
-				local word_commits
-				if [ $#revs -gt 1 ]; then
-					word_commits='commits'
-				else
-					word_commits='commit'
+				local -a revs
+				revs=($(git rev-list --reverse $track_merge..HEAD))
+				if [ $#revs -gt 0 ]; then
+					local base=$(git describe --always $revs[1]~1)
+					local base_name=$(git name-rev --name-only $base)
+					local base_short=$(git describe --always $base)
+					local word_commits
+					if [ $#revs -gt 1 ]; then
+						word_commits='commits'
+					else
+						word_commits='commit'
+					fi
+
+					local conj="since"
+					if [[ "$base" == "$tracked" ]]; then
+						conj+=" tracked"
+						tracked=
+					fi
+					commits+="$#revs $word_commits $conj $pc[scm_branch]$base_name$pc[punc]($pc[scm_commitid]$base_short$pc[punc])$pc[reset]"
 				fi
 
-				local conj="since"
-				if [[ "$base" == "$tracked" ]]; then
-					conj+=" tracked"
-					tracked=
+				if [ -n "$tracked" ]; then
+					local track_name=$track_merge
+					if [[ $track_remote == "." ]]; then
+						track_name=${track_name##*/}
+					fi
+					tracked=$(git describe --always $tracked)
+					commits+="tracking $pc[scm_branch]$track_name$pc[punc]"
+					if [[ "$tracked" != "$gitcommit" ]]; then
+						commits[$#commits]+="($pc[scm_commitid]$tracked$pc[punc])"
+					fi
+					commits[$#commits]+="$pc[reset]"
 				fi
-				commits+="$#revs $word_commits $conj $pc[scm_branch]$base_name$pc[punc]($pc[scm_commitid]$base_short$pc[punc])$pc[reset]"
-			fi
-
-			if [ -n "$tracked" ]; then
-				local track_name=$track_merge
-				if [[ $track_remote == "." ]]; then
-					track_name=${track_name##*/}
-				fi
-				tracked=$(git describe --always $tracked)
-				commits+="tracking $pc[scm_branch]$track_name$pc[punc]"
-				if [[ "$tracked" != "$gitcommit" ]]; then
-					commits[$#commits]+="($pc[scm_commitid]$tracked$pc[punc])"
-				fi
-				commits[$#commits]+="$pc[reset]"
 			fi
 		fi
 	fi
