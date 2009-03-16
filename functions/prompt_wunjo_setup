@@ -189,7 +189,7 @@ prompt_wunjo_scm_status() {
 		commits+="on $pc[scm_branch]$head$pc[punc]($pc[scm_commitid]$gitcommit$pc[punc])$pc[reset]"
 		local track_merge=$(zgit_tracking_merge)
 		if [ -n "$track_merge" ]; then
-			if git rev-parse --verify -q $track_merge; then
+			if git rev-parse --verify -q $track_merge >/dev/null; then
 				local track_remote=$(zgit_tracking_remote)
 				local tracked=$(git describe --always $track_merge 2>/dev/null)
 
