@@ -25,7 +25,7 @@ zgit_precmd_hook() {
 zgit_info_update() {
 	zgit_info=()
 
-	local gitdir=$(git rev-parse --git-dir 2>/dev/null)
+	local gitdir="$(git rev-parse --git-dir 2>/dev/null)"
 	if [ $? -ne 0 ] || [ -z "$gitdir" ]; then
 		return
 	fi
