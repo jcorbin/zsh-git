@@ -12,7 +12,7 @@ EOF
 }
 
 revstring() {
-	git describe --always $1 2>/dev/null ||
+	git describe --tags --always $1 2>/dev/null ||
 	git rev-parse --short $1 2>/dev/null
 }
 
