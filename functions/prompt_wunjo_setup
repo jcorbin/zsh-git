@@ -137,7 +137,7 @@ prompt_wunjo_setup() {
 	RPROMPT+=" $p_line"
 
 	export PROMPT RPROMPT
-	precmd_functions+='prompt_wunjo_precmd'
+	add-zsh-hook precmd prompt_wunjo_precmd
 }
 
 prompt_wunjo_precmd() {
