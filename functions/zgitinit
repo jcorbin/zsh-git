@@ -165,7 +165,7 @@ zgit_isindexclean() {
 
 zgit_isworktreeclean() {
 	zgit_isgit || return 1
-	if [ -z "$(git ls-files $zgit_info[dir] --modified)" ]; then
+	if [ -z "$(git ls-files $zgit_info[dir]:h --modified)" ]; then
 		return 0
 	else
 		return 1
