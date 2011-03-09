@@ -203,8 +203,7 @@ zgit_svnhead() {
 	fi
 
 	git show --raw $commit | \
-		grep git-svn-id | \
-			sed -re 's/^\s*git-svn-id: .*@([0-9]+).*$/\1/'
+		awk '/git-svn-id: .*@([0-9]*)/ { print substr($2, index($2, "@")+1) }'
 }
 
 zgit_rebaseinfo() {
