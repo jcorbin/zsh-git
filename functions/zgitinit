@@ -202,8 +202,7 @@ zgit_svnhead() {
 		commit='HEAD'
 	fi
 
-	git show --raw $commit | \
-		awk '/git-svn-id: .*@([0-9]*)/ { print substr($2, index($2, "@")+1) }'
+	git svn find-rev $commit
 }
 
 zgit_rebaseinfo() {
