@@ -143,7 +143,7 @@ zgit_tracking_merge() {
 	if [ -n "$remote" ]; then # tracking branch
 		local merge=$(git config branch.$branch.merge)
 		if [ $remote != "." ]; then
-			merge=$remote/$(basename $merge)
+			merge=$remote/${merge#refs/heads/}
 		fi
 		echo $merge
 		return 0
